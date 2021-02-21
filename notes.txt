@@ -1,0 +1,5 @@
+// Get list of installed plugins - detailed
+wget http://127.0.0.1:8080/pluginManager/api/xml?depth=1
+
+// Get list of installed plugins - name & version only
+wget http://127.0.0.1:8080/pluginManager/api/xml?depth=1&xpath=/*/*/shortName|/*/*/version&wrapper=plugins

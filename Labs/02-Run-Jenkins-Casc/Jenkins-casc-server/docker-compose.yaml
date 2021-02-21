@@ -1,0 +1,53 @@
+# docker-compose.yml
+version: "3"
+services:
+  jenkins:
+    # the container name
+    build:
+      context: ${CUSTOM_IMAGE_FOLDER}
+
+      platforms:
+        - "linux/amd64"
+        - "linux/arm64"
+  
+    # To disable the security labeling for this container
+    privileged: true
+
+    # Container User if required
+    user: root
+
+    # Tip: 'group_add' was removed in version 3
+    # https://docs.docker.com/compose/compose-file/compose-versioning/#version-3
+    # group_add:
+    #   - docker
+
+    # Listen on the desired ports
+    # - Port 8080   exposes the web interface
+    # - Port 50000  gives you access to a remote Java (Jenkins) API.
+    ports:
+      - ${HOST_PORT_WEB}:8080
+      - ${HOST_PORT_API}:50000
+    # the mount volumes
+    volumes:
+      - ${HOST_JENKINS_DATA}:/var/jenkins_home
+      # When the Docker platform is installed on a host, the Docker daemon
+      # listens on the `/var/run/docker.sock` Unix socket by default.
+      - ${HOST_DOCKER}:/var/run/docker.sock
+    # Skip the setup wizard
+    environment:
+      - jenkins.install.runSetupWizard=false
+  # sonarqube:
+  #   image: sonarqube
+  #   container_name: sonar
+  #   restart: always
+  #   environment:
+  #     - SONARQUBE_JDBC_USERNAME=sonar
+  #     - SONARQUBE_JDBC_PASSWORD=sonar
+  #   ports:
+  #     - "9000:9000"
+  #     - "9092:9092"
+  #   volumes:
+  #     - '.\sonar\conf:/opt/sonarqube/conf'
+  #     - '.\sonar\data:/opt/sonarqube/data'
+  #     - '.\sonar\extensions:/opt/sonarqube/extensions'
+  #     - '.\sonar\bundled-plugins:/opt/sonarqube/lib/bundled-plugins'
